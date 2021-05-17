@@ -44,6 +44,40 @@ app.get('/sneakers', async(req, res, next)=> {
   }
 });
 
+app.get('/sneakers/:brand', async(req, res, next)=> {
+  try {
+    const brand = req.params.brand;
+    const sneakers = await Sneaker.findAll({
+      where: {
+        brand
+      }
+    });
+    res.send(`
+      <html>
+        <head>
+          <title>Sneakers (${brand})</title>
+        </head>
+        <body>
+          <h1>Sneaker World (${ sneakers.length })</h1>
+          <h2><a href='/sneakers'>${ brand }</a></h2>
+          <ul>
+            ${
+              sneakers.map( sneaker => {
+                return `
+                  <li>${ sneaker.name }</li>
+                `;
+              }).join('')
+            }
+          </ul>
+        </body>
+      </html>
+    `);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 
 const run = async()=> {
   try {
